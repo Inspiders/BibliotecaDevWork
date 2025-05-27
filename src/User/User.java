@@ -1,9 +1,9 @@
 package User;
 
 import Bank.ContBank;
+import Book.Book;
 import ClassAux.*;
 import ClassMother.ListProgram;
-import Book.Book;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.Scanner;
@@ -336,5 +336,20 @@ public class User {
                     System.out.println("Indisponivel");
                 }
          } catch (Exception _) {}
+    }
+
+    /**
+     * Autentica um usuário pelo nome de usuário e PIN.
+     * @param user Nome de usuário
+     * @param pin PIN do usuário
+     * @return índice do usuário se autenticado, -1 caso contrário
+     */
+    public static int autenticar(String user, String pin) {
+        for (int i = 0; i < numUser; i++) {
+            if (ListProgram.listUser.get(i).equalsIgnoreCase(user) && ListProgram.listPin.get(i).equals(pin)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

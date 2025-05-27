@@ -1,0 +1,17 @@
+com\biblioteca\TelaCadastro.class
+com\biblioteca\TelaGerenciarLivros$Livro.class
+com\biblioteca\Usuario.class
+com\biblioteca\BibliotecaGUI.class
+com\biblioteca\Recursos.class
+com\biblioteca\TelaRecuperarSenha.class
+com\biblioteca\Main.class
+com\biblioteca\TelaAdmin.class
+com\biblioteca\User.class
+com\biblioteca\Livro.class
+com\biblioteca\TelaGerenciarUsuarios.class
+com\biblioteca\TelaPrincipalAdmin.class
+com\biblioteca\TelaGerenciarLivros.class
+com\biblioteca\TelaLogin.class
+com\biblioteca\TelaPrincipalUsuario.class
+com\biblioteca\TelaGerenciarUsuarios$Usuario.class
+com\biblioteca\TelaAdminLogin.class
