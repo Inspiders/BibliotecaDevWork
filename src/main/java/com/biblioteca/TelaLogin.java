@@ -88,41 +88,58 @@ public class TelaLogin {
         campoUsuario.setPromptText("Usuário");
         campoUsuario.setPrefHeight(38);
         campoUsuario.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: #eee; -fx-font-size: 15px;");
+        campoUsuario.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal)
+                campoUsuario.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: " + VERMELHO + "; -fx-font-size: 15px;");
+            else
+                campoUsuario.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: #eee; -fx-font-size: 15px;");
+        });
 
         PasswordField campoPin = new PasswordField();
         campoPin.setPromptText("PIN");
         campoPin.setPrefHeight(38);
         campoPin.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: #eee; -fx-font-size: 15px;");
+        campoPin.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal)
+                campoPin.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: " + VERMELHO + "; -fx-font-size: 15px;");
+            else
+                campoPin.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: #eee; -fx-font-size: 15px;");
+        });
 
         HBox forgotBox = new HBox();
         forgotBox.setAlignment(Pos.CENTER_LEFT);
         Hyperlink forgotLink = new Hyperlink("Esqueceu a senha?");
         forgotLink.setBorder(Border.EMPTY);
         forgotLink.setTextFill(Color.web(VERMELHO));
-        forgotLink.setOnAction(e -> statusLabel.setText("Função de recuperação não implementada."));
+        forgotLink.setOnAction(e -> mostrarStatusAnimado("Função de recuperação não implementada.", true));
         forgotBox.getChildren().add(forgotLink);
 
         Button btnLogin = new Button("Entrar");
         btnLogin.setPrefWidth(Double.MAX_VALUE);
         btnLogin.setPrefHeight(38);
-        btnLogin.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 8px; -fx-font-weight: bold;");
-        btnLogin.setOnAction(e -> fazerLogin(campoUsuario.getText(), campoPin.getText()));
+        btnLogin.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 8px; -fx-font-weight: bold; -fx-cursor: hand;");
+        btnLogin.setOnMousePressed(e -> btnLogin.setScaleX(0.97));
+        btnLogin.setOnMouseReleased(e -> btnLogin.setScaleX(1.0));
+        btnLogin.setOnAction(e -> fazerLoginAnimado(campoUsuario, campoPin));
 
         Button btnSignUp = new Button("Não tem uma conta? Cadastre-se");
         btnSignUp.setPrefWidth(Double.MAX_VALUE);
         btnSignUp.setPrefHeight(38);
-        btnSignUp.setStyle("-fx-background-color: " + VERMELHO_CLARO + "; -fx-text-fill: " + VERMELHO + "; -fx-font-size: 15px; -fx-background-radius: 8px; -fx-border-color: " + VERMELHO + "; -fx-border-width: 1px; -fx-font-weight: bold;");
+        btnSignUp.setStyle("-fx-background-color: " + VERMELHO_CLARO + "; -fx-text-fill: " + VERMELHO + "; -fx-font-size: 15px; -fx-background-radius: 8px; -fx-border-color: " + VERMELHO + "; -fx-border-width: 1px; -fx-font-weight: bold; -fx-cursor: hand;");
+        btnSignUp.setOnMousePressed(e -> btnSignUp.setScaleX(0.97));
+        btnSignUp.setOnMouseReleased(e -> btnSignUp.setScaleX(1.0));
         btnSignUp.setOnAction(e -> new TelaCadastro(stage));
 
         Hyperlink adminLink = new Hyperlink("Entrar como administrador");
         adminLink.setTextFill(Color.web(VERMELHO));
         adminLink.setBorder(Border.EMPTY);
-        adminLink.setOnAction(e -> statusLabel.setText("Função de admin não implementada."));
+        adminLink.setOnAction(e -> mostrarStatusAnimado("Função de admin não implementada.", true));
         adminLink.setStyle("-fx-font-size: 13px; -fx-underline: true; -fx-padding: 0 0 0 2;");
 
         statusLabel = new Label("");
         statusLabel.setTextFill(Color.web(VERMELHO));
         statusLabel.setFont(Font.font("Arial", 13));
+        statusLabel.setOpacity(0);
 
         form.getChildren().addAll(
             titulo,
@@ -172,22 +189,42 @@ public class TelaLogin {
         stage.show();
     }
     
-    private void fazerLogin(String usuario, String pin) {
-        if (usuario.isEmpty() || pin.isEmpty()) {
-            statusLabel.setText("Preencha todos os campos!");
+    private void fazerLoginAnimado(TextField campoUsuario, PasswordField campoPin) {
+        boolean erro = false;
+        if (campoUsuario.getText().isEmpty()) {
+            campoUsuario.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: " + VERMELHO + "; -fx-font-size: 15px; -fx-background-color: #fffbe9;");
+            campoUsuario.requestFocus();
+            erro = true;
+        }
+        if (campoPin.getText().isEmpty() || campoPin.getText().length() < 4) {
+            campoPin.setStyle("-fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-color: " + VERMELHO + "; -fx-font-size: 15px; -fx-background-color: #fffbe9;");
+            if (!erro) campoPin.requestFocus();
+            erro = true;
+        }
+        if (erro) {
+            mostrarStatusAnimado("Preencha todos os campos corretamente! (PIN mínimo 4 dígitos)", true);
             return;
         }
-        int idx = User.autenticar(usuario, pin);
+        int idx = User.autenticar(campoUsuario.getText(), campoPin.getText());
         if (idx >= 0) {
-            statusLabel.setText("Login realizado! Bem-vindo, " + usuario + ".");
-            // Verificar se é admin ou usuário comum
-            if (usuario.equals("admin")) {
-                new TelaPrincipalAdmin(stage, usuario);
+            mostrarStatusAnimado("Login realizado! Bem-vindo, " + campoUsuario.getText() + ".", false);
+            if (campoUsuario.getText().equals("admin")) {
+                new TelaPrincipalAdmin(stage, campoUsuario.getText());
             } else {
-                new TelaPrincipalUsuario(stage, usuario);
+                new TelaPrincipalUsuario(stage, campoUsuario.getText());
             }
         } else {
-            statusLabel.setText("Usuário ou PIN inválidos!");
+            mostrarStatusAnimado("Usuário ou PIN inválidos!", true);
         }
+    }
+
+    private void mostrarStatusAnimado(String mensagem, boolean erro) {
+        statusLabel.setText(mensagem);
+        statusLabel.setTextFill(erro ? Color.web(VERMELHO) : Color.web("#27AE60"));
+        statusLabel.setOpacity(0);
+        javafx.animation.FadeTransition ft = new javafx.animation.FadeTransition(javafx.util.Duration.millis(350), statusLabel);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
     }
 } 

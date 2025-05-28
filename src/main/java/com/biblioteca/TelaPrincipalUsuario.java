@@ -11,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
@@ -23,13 +24,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TelaPrincipalUsuario {
     private static final String VERMELHO = "#E74C3C";
@@ -151,6 +157,21 @@ public class TelaPrincipalUsuario {
     private void mostrarTelaInicial() {
         contentArea.getChildren().clear();
         
+        // Feed de novidades/atividades
+        VBox feedBox = new VBox(8);
+        feedBox.setStyle("-fx-background-color: white; -fx-padding: 18 24 18 24; -fx-background-radius: 10;");
+        feedBox.setMaxWidth(700);
+        Label lblFeed = new Label("Feed de Novidades");
+        lblFeed.setFont(Font.font("Arial", 18));
+        lblFeed.setTextFill(Color.web(VERMELHO));
+        feedBox.getChildren().addAll(
+            lblFeed,
+            criarFeedItem("Novo livro adicionado: 'O Alquimista' de Paulo Coelho."),
+            criarFeedItem("Você devolveu 'Clean Code' em 10/04/2024."),
+            criarFeedItem("Promoção: Leia 5 livros este mês e ganhe um brinde!"),
+            criarFeedItem("Novo comentário na sua resenha de '1984'.")
+        );
+
         Label bemVindo = new Label("Bem-vindo, " + usuario + "!");
         bemVindo.setFont(Font.font("Arial", 24));
         bemVindo.setTextFill(Color.web(VERMELHO));
@@ -159,94 +180,20 @@ public class TelaPrincipalUsuario {
         subtitulo.setFont(Font.font("Arial", 16));
         subtitulo.setTextFill(Color.web(TEXTO_ESCURO));
 
-        // Área de notificações
-        VBox notificacoesBox = new VBox(10);
-        notificacoesBox.setStyle("-fx-background-color: " + BRANCO + "; -fx-padding: 15; -fx-background-radius: 10;");
-        notificacoesBox.setMaxWidth(600);
-        
-        Label lblNotificacoes = new Label("Notificações");
-        lblNotificacoes.setFont(Font.font("Arial", 18));
-        lblNotificacoes.setTextFill(Color.web(VERMELHO));
-        
-        // Exemplo de notificações
-        VBox notificacao1 = criarNotificacao(
-            "📚 Livro Disponível",
-            "O livro '1984' que você reservou está disponível para empréstimo!",
-            "Ver Detalhes"
-        );
-        
-        VBox notificacao2 = criarNotificacao(
-            "⚠️ Devolução Próxima",
-            "O livro 'Dom Casmurro' deve ser devolvido em 2 dias.",
-            "Renovar"
-        );
-        
-        notificacoesBox.getChildren().addAll(lblNotificacoes, notificacao1, notificacao2);
-
-        HBox cards = new HBox(20);
-        cards.setAlignment(Pos.CENTER);
-
-        // Card de Livros
-        VBox cardLivros = criarCard("📚", "Livros Disponíveis", "Explore nosso acervo de livros");
-        cardLivros.setOnMouseClicked(e -> mostrarLivrosDisponiveis());
-
-        // Card de Empréstimos
-        VBox cardEmprestimos = criarCard("📖", "Meus Empréstimos", "Veja seus livros emprestados");
-        cardEmprestimos.setOnMouseClicked(e -> mostrarEmprestimos());
-
-        // Card de Histórico
-        VBox cardHistorico = criarCard("📋", "Histórico", "Consulte seu histórico de empréstimos");
-        cardHistorico.setOnMouseClicked(e -> mostrarHistorico());
-
-        cards.getChildren().addAll(cardLivros, cardEmprestimos, cardHistorico);
-
-        contentArea.getChildren().addAll(bemVindo, subtitulo, notificacoesBox, cards);
+        contentArea.getChildren().addAll(feedBox, bemVindo, subtitulo);
     }
 
-    private VBox criarNotificacao(String titulo, String mensagem, String acao) {
-        VBox notificacao = new VBox(5);
-        notificacao.setStyle("-fx-background-color: " + VERMELHO_CLARO + "; -fx-padding: 10; -fx-background-radius: 5;");
-        
-        Label lblTitulo = new Label(titulo);
-        lblTitulo.setFont(Font.font("Arial", 14));
-        lblTitulo.setTextFill(Color.web(VERMELHO));
-        
-        Label lblMensagem = new Label(mensagem);
-        lblMensagem.setFont(Font.font("Arial", 12));
-        lblMensagem.setTextFill(Color.web(TEXTO_ESCURO));
-        lblMensagem.setWrapText(true);
-        
-        Button btnAcao = new Button(acao);
-        btnAcao.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: " + BRANCO + ";");
-        btnAcao.setPrefWidth(100);
-        
-        notificacao.getChildren().addAll(lblTitulo, lblMensagem, btnAcao);
-        return notificacao;
-    }
-
-    private VBox criarCard(String icone, String titulo, String descricao) {
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(20));
-        card.setPrefWidth(200);
-        card.setStyle("-fx-background-color: " + BRANCO + "; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);");
-        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: " + VERMELHO_CLARO + "; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);"));
-        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: " + BRANCO + "; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);"));
-
-        Label lblIcone = new Label(icone);
-        lblIcone.setFont(Font.font("Arial", 30));
-
-        Label lblTitulo = new Label(titulo);
-        lblTitulo.setFont(Font.font("Arial", 16));
-        lblTitulo.setTextFill(Color.web(TEXTO_ESCURO));
-
-        Label lblDescricao = new Label(descricao);
-        lblDescricao.setFont(Font.font("Arial", 12));
-        lblDescricao.setTextFill(Color.web(TEXTO_ESCURO));
-        lblDescricao.setWrapText(true);
-
-        card.getChildren().addAll(lblIcone, lblTitulo, lblDescricao);
-        return card;
+    private HBox criarFeedItem(String texto) {
+        HBox item = new HBox();
+        item.setSpacing(8);
+        item.setAlignment(Pos.CENTER_LEFT);
+        Label icone = new Label("📰");
+        icone.setFont(Font.font("Arial", 16));
+        Label lblTexto = new Label(texto);
+        lblTexto.setFont(Font.font("Arial", 13));
+        lblTexto.setTextFill(Color.web(TEXTO_ESCURO));
+        item.getChildren().addAll(icone, lblTexto);
+        return item;
     }
 
     private void mostrarEmprestimos() {
@@ -320,7 +267,7 @@ public class TelaPrincipalUsuario {
 
         // Área de busca avançada
         VBox buscaAvancada = new VBox(10);
-        buscaAvancada.setStyle("-fx-background-color: " + BRANCO + "; -fx-padding: 15; -fx-background-radius: 10;");
+        buscaAvancada.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;");
         
         Label lblBusca = new Label("Busca Avançada");
         lblBusca.setFont(Font.font("Arial", 16));
@@ -349,233 +296,105 @@ public class TelaPrincipalUsuario {
         filtros.getChildren().addAll(campoBusca, cbGenero, cbDisponibilidade, cbOrdenacao, btnBuscar);
         buscaAvancada.getChildren().addAll(lblBusca, filtros);
 
-        // Área de sugestões (sem scroll)
-        VBox sugestoesBox = new VBox(10);
-        sugestoesBox.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;");
-        sugestoesBox.setMaxWidth(900);
-        
-        Label lblSugestoes = new Label("Sugestões para Você");
-        lblSugestoes.setFont(Font.font("Arial", 18));
-        lblSugestoes.setTextFill(Color.web(TEXTO_ESCURO));
-        
-        HBox sugestoes = new HBox(20);
-        sugestoes.setAlignment(Pos.CENTER_LEFT);
-        sugestoes.getChildren().addAll(
-            criarCardLivro(
-                "https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg",
-                "Clean Code",
-                "Robert C. Martin",
-                "Programação",
-                3,
-                true
-            ),
-            criarCardLivro(
-                "https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg",
-                "O Programador Pragmático",
-                "Andrew Hunt, David Thomas",
-                "Programação",
-                2,
-                true
-            ),
-            criarCardLivro(
-                "https://m.media-amazon.com/images/I/81WcnNQ-TBL.jpg",
-                "Java: Como Programar",
-                "Paul Deitel, Harvey Deitel",
-                "Programação",
-                5,
-                true
-            )
+        // Seção: Recomendados para Você
+        Label lblRecomendados = new Label("Recomendados para Você");
+        lblRecomendados.setFont(Font.font("Arial", 18));
+        lblRecomendados.setTextFill(Color.web(VERMELHO));
+        HBox recomendados = new HBox(24);
+        recomendados.setAlignment(Pos.CENTER_LEFT);
+        recomendados.getChildren().addAll(
+            criarLivroLinha("https://m.media-amazon.com/images/I/81iqZ2HHD-L.jpg", "Harry Potter e a Pedra Filosofal", "J.K. Rowling", "Fantasia", 5, true, 4.8, 320),
+            criarLivroLinha("https://m.media-amazon.com/images/I/71UwSHSZRnS.jpg", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", 3, true, 4.9, 410),
+            criarLivroLinha("https://m.media-amazon.com/images/I/81eA+4-mUIL.jpg", "O Hobbit", "J.R.R. Tolkien", "Fantasia", 2, true, 4.7, 210)
         );
-        sugestoesBox.getChildren().addAll(lblSugestoes, sugestoes);
 
-        // Grid de livros
-        GridPane gridLivros = new GridPane();
-        gridLivros.setHgap(20);
-        gridLivros.setVgap(20);
-        gridLivros.setPadding(new Insets(20));
-        int col = 0;
-        int row = 0;
-        // Livros famosos e de programação
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/81iqZ2HHD-L.jpg",
-            "Harry Potter e a Pedra Filosofal",
-            "J.K. Rowling",
-            "Fantasia",
-            5,
-            true
-        ), col++, row);
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/71UwSHSZRnS.jpg",
-            "O Senhor dos Anéis",
-            "J.R.R. Tolkien",
-            "Fantasia",
-            3,
-            true
-        ), col++, row);
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/81eA+4-mUIL.jpg",
-            "O Hobbit",
-            "J.R.R. Tolkien",
-            "Fantasia",
-            2,
-            true
-        ), col++, row);
-        col = 0; row++;
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/71kxa1-0mfL.jpg",
-            "1984",
-            "George Orwell",
-            "Ficção Científica",
-            4,
-            true
-        ), col++, row);
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg",
-            "Clean Code",
-            "Robert C. Martin",
-            "Programação",
-            3,
-            true
-        ), col++, row);
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg",
-            "O Programador Pragmático",
-            "Andrew Hunt, David Thomas",
-            "Programação",
-            2,
-            true
-        ), col++, row);
-        col = 0; row++;
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/81WcnNQ-TBL.jpg",
-            "Java: Como Programar",
-            "Paul Deitel, Harvey Deitel",
-            "Programação",
-            5,
-            true
-        ), col++, row);
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/81drfTT9ZfL.jpg",
-            "Dom Casmurro",
-            "Machado de Assis",
-            "Romance",
-            2,
-            true
-        ), col++, row);
-        gridLivros.add(criarCardLivro(
-            "https://m.media-amazon.com/images/I/81AFgE3E6-L.jpg",
-            "O Pequeno Príncipe",
-            "Antoine de Saint-Exupéry",
-            "Aventura",
-            3,
-            true
-        ), col++, row);
+        // Seção: Programação
+        Label lblProg = new Label("Programação");
+        lblProg.setFont(Font.font("Arial", 18));
+        lblProg.setTextFill(Color.web(VERMELHO));
+        HBox prog = new HBox(24);
+        prog.setAlignment(Pos.CENTER_LEFT);
+        prog.getChildren().addAll(
+            criarLivroLinha("https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg", "Clean Code", "Robert C. Martin", "Programação", 3, true, 4.5, 128),
+            criarLivroLinha("https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg", "O Programador Pragmático", "Andrew Hunt, David Thomas", "Programação", 2, true, 4.6, 98),
+            criarLivroLinha("https://m.media-amazon.com/images/I/81WcnNQ-TBL.jpg", "Java: Como Programar", "Paul Deitel, Harvey Deitel", "Programação", 5, true, 4.4, 75)
+        );
 
-        ScrollPane scrollPane = new ScrollPane(gridLivros);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(500);
+        // Seção: Romance
+        Label lblRomance = new Label("Romance");
+        lblRomance.setFont(Font.font("Arial", 18));
+        lblRomance.setTextFill(Color.web(VERMELHO));
+        HBox romance = new HBox(24);
+        romance.setAlignment(Pos.CENTER_LEFT);
+        romance.getChildren().addAll(
+            criarLivroLinha("https://m.media-amazon.com/images/I/81drfTT9ZfL.jpg", "Dom Casmurro", "Machado de Assis", "Romance", 2, true, 4.2, 60),
+            criarLivroLinha("https://m.media-amazon.com/images/I/81AFgE3E6-L.jpg", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Aventura", 3, true, 4.8, 200)
+        );
 
-        contentArea.getChildren().addAll(titulo, buscaAvancada, sugestoesBox, scrollPane);
+        // Seção: Ficção Científica
+        Label lblFiccao = new Label("Ficção Científica");
+        lblFiccao.setFont(Font.font("Arial", 18));
+        lblFiccao.setTextFill(Color.web(VERMELHO));
+        HBox ficcao = new HBox(24);
+        ficcao.setAlignment(Pos.CENTER_LEFT);
+        ficcao.getChildren().addAll(
+            criarLivroLinha("https://m.media-amazon.com/images/I/71kxa1-0mfL.jpg", "1984", "George Orwell", "Ficção Científica", 4, true, 4.7, 180)
+        );
+
+        contentArea.getChildren().addAll(titulo, buscaAvancada, lblRecomendados, recomendados, lblProg, prog, lblRomance, romance, lblFiccao, ficcao);
     }
 
-    private VBox criarCardLivro(String urlCapa, String titulo, String autor, String genero, int quantidade, boolean disponivel) {
-        return criarCardLivro(urlCapa, titulo, autor, genero, quantidade, disponivel, false);
-    }
-
-    private VBox criarCardLivro(String urlCapa, String titulo, String autor, String genero, int quantidade, boolean disponivel, boolean reservado) {
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(15));
-        card.setPrefWidth(200);
-        card.setStyle("-fx-background-color: " + BRANCO + "; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0, 0, 0); transition: box-shadow 0.3s, transform 0.3s;");
-        
-        ImageView capa = new ImageView(new Image(urlCapa, 120, 170, true, true));
+    private VBox criarLivroLinha(String urlCapa, String titulo, String autor, String genero, int quantidade, boolean disponivel, double avaliacao, int numAvaliacoes) {
+        VBox box = new VBox(6);
+        box.setAlignment(Pos.TOP_CENTER);
+        box.setPrefWidth(170);
+        box.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 0); transition: box-shadow 0.3s, transform 0.3s;");
+        box.setPadding(new Insets(10, 8, 10, 8));
+        box.setOnMouseEntered(e -> box.setStyle("-fx-background-color: #FDEDEC; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #E74C3C55, 16, 0.2, 0, 0); transform: scale(1.04);"));
+        box.setOnMouseExited(e -> box.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 0); transition: box-shadow 0.3s, transform 0.3s;"));
+        ImageView capa = new ImageView(new Image(urlCapa, 110, 150, true, true));
         capa.setPreserveRatio(true);
-        capa.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);");
-        
-        // Efeito animado de hover
-        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: " + VERMELHO_CLARO + "; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, " + VERMELHO + "55, 18, 0.2, 0, 0); transform: scale(1.04);"));
-        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: " + BRANCO + "; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 10, 0, 0, 0); transition: box-shadow 0.3s, transform 0.3s;"));
-        
         Label lblTitulo = new Label(titulo);
-        lblTitulo.setFont(Font.font("Arial", 14));
+        lblTitulo.setFont(Font.font("Arial", 13));
         lblTitulo.setWrapText(true);
-        lblTitulo.setMaxWidth(180);
-        
+        lblTitulo.setMaxWidth(140);
         Label lblAutor = new Label(autor);
-        lblAutor.setFont(Font.font("Arial", 12));
+        lblAutor.setFont(Font.font("Arial", 11));
         lblAutor.setTextFill(Color.GRAY);
-        
         Label lblGenero = new Label(genero);
-        lblGenero.setFont(Font.font("Arial", 12));
+        lblGenero.setFont(Font.font("Arial", 11));
         lblGenero.setTextFill(Color.web(VERMELHO));
-        
-        Label lblStatus = new Label();
-        lblStatus.setFont(Font.font("Arial", 12));
-        if (disponivel) {
-            lblStatus.setText("Disponível: " + quantidade);
-            lblStatus.setTextFill(Color.GREEN);
-        } else if (reservado) {
-            lblStatus.setText("Reservado");
-            lblStatus.setTextFill(Color.ORANGE);
-        } else {
-            lblStatus.setText("Indisponível");
-            lblStatus.setTextFill(Color.RED);
-        }
-        // Área de avaliação
-        HBox avaliacaoBox = new HBox(5);
+        Label lblStatus = new Label("Disponível: " + quantidade);
+        lblStatus.setFont(Font.font("Arial", 11));
+        lblStatus.setTextFill(Color.web("#27AE60"));
+        // Avaliação
+        HBox avaliacaoBox = new HBox(3);
         avaliacaoBox.setAlignment(Pos.CENTER);
-        Label lblAvaliacao = new Label("⭐ 4.5");
-        lblAvaliacao.setFont(Font.font("Arial", 12));
-        lblAvaliacao.setTextFill(Color.web("#F1C40F"));
-        Label lblNumAvaliacoes = new Label("(128 avaliações)");
-        lblNumAvaliacoes.setFont(Font.font("Arial", 10));
-        lblNumAvaliacoes.setTextFill(Color.GRAY);
-        avaliacaoBox.getChildren().addAll(lblAvaliacao, lblNumAvaliacoes);
-        Button btnAcao = new Button();
-        btnAcao.setPrefWidth(Double.MAX_VALUE);
-        if (disponivel) {
-            btnAcao.setText("Emprestar");
-            btnAcao.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: white;");
-            btnAcao.setOnAction(e -> emprestarLivro(titulo));
-        } else if (reservado) {
-            btnAcao.setText("Cancelar Reserva");
-            btnAcao.setStyle("-fx-background-color: #95A5A6; -fx-text-fill: white;");
-            btnAcao.setOnAction(e -> cancelarReserva(titulo));
-        } else {
-            btnAcao.setText("Reservar");
-            btnAcao.setStyle("-fx-background-color: #F39C12; -fx-text-fill: white;");
-            btnAcao.setOnAction(e -> reservarLivro(titulo));
-        }
+        Label lblEstrelas = new Label("★".repeat((int) Math.round(avaliacao)));
+        lblEstrelas.setFont(Font.font("Arial", 12));
+        lblEstrelas.setTextFill(Color.web("#F1C40F"));
+        Label lblNumAval = new Label(String.format("%.1f (%d)", avaliacao, numAvaliacoes));
+        lblNumAval.setFont(Font.font("Arial", 10));
+        lblNumAval.setTextFill(Color.GRAY);
+        avaliacaoBox.getChildren().addAll(lblEstrelas, lblNumAval);
+        HBox botoes = new HBox(6);
+        botoes.setAlignment(Pos.CENTER);
+        Button btnEmprestar = new Button("Emprestar");
+        btnEmprestar.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 8;");
+        btnEmprestar.setPrefWidth(70);
+        btnEmprestar.setOnAction(e -> emprestarLivro(titulo));
         Button btnAvaliar = new Button("Avaliar");
-        btnAvaliar.setStyle("-fx-background-color: #3498DB; -fx-text-fill: white;");
-        btnAvaliar.setPrefWidth(Double.MAX_VALUE);
+        btnAvaliar.setStyle("-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 8;");
+        btnAvaliar.setPrefWidth(70);
         btnAvaliar.setOnAction(e -> mostrarDialogoAvaliacao(titulo));
-        card.getChildren().addAll(capa, lblTitulo, lblAutor, lblGenero, lblStatus, avaliacaoBox, btnAcao, btnAvaliar);
-        return card;
+        botoes.getChildren().addAll(btnEmprestar, btnAvaliar);
+        box.getChildren().addAll(capa, lblTitulo, lblAutor, lblGenero, lblStatus, avaliacaoBox, botoes);
+        return box;
     }
 
     private void emprestarLivro(String titulo) {
         // TODO: Implementar lógica de empréstimo
         mostrarNotificacao("Sucesso", "Livro '" + titulo + "' emprestado com sucesso!");
-    }
-
-    private void reservarLivro(String titulo) {
-        // TODO: Implementar lógica de reserva
-        mostrarNotificacao("Sucesso", "Livro '" + titulo + "' reservado com sucesso! Você será notificado quando estiver disponível.");
-    }
-
-    private void cancelarReserva(String titulo) {
-        // TODO: Implementar lógica de cancelamento de reserva
-        mostrarNotificacao("Sucesso", "Reserva do livro '" + titulo + "' cancelada com sucesso!");
-    }
-
-    private void mostrarNotificacao(String titulo, String mensagem) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensagem);
-        alert.showAndWait();
     }
 
     private void mostrarHistorico() {
@@ -610,68 +429,92 @@ public class TelaPrincipalUsuario {
     private void mostrarPerfil() {
         contentArea.getChildren().clear();
 
-        // Capa vermelha estilo LinkedIn
-        VBox capa = new VBox();
-        capa.setStyle("-fx-background-color: " + VERMELHO + "; -fx-min-height: 120px; -fx-background-radius: 16 16 0 0;");
-        capa.setMinHeight(120);
-        capa.setMaxWidth(600);
+        // Container responsivo centralizado
+        VBox container = new VBox();
+        container.setAlignment(Pos.TOP_CENTER);
+        container.setSpacing(0);
+        container.setFillWidth(false);
+        container.setPrefWidth(600);
+        container.setMaxWidth(700);
+        container.setMinWidth(350);
+        container.setStyle("-fx-background-color: transparent;");
 
-        // Avatar circular angolano
-        ImageView avatar = new ImageView(new Image("https://randomuser.me/api/portraits/men/76.jpg", 110, 110, true, true));
-        avatar.setStyle("-fx-background-radius: 55; -fx-effect: dropshadow(gaussian, " + VERMELHO + "AA, 8, 0.2, 0, 0);");
+        // Capa vermelha responsiva
+        StackPane capa = new StackPane();
+        capa.setStyle("-fx-background-color: " + VERMELHO + "; -fx-background-radius: 18 18 0 0;");
+        capa.setMinHeight(140);
+        capa.setMaxWidth(700);
+
+        // Avatar destacado
+        StackPane avatarPane = new StackPane();
+        avatarPane.setPrefHeight(0);
+        avatarPane.setTranslateY(-55);
+        ImageView avatar = new ImageView(new Image("https://avataaars.io/?avatarStyle=Circle&topType=ShortHairShortCurly&accessoriesType=Blank&hairColor=Black&facialHairType=BeardLight&facialHairColor=Black&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Smile&skinColor=Brown", 110, 110, true, true));
         avatar.setClip(new javafx.scene.shape.Circle(55, 55, 55));
-        avatar.setTranslateY(-55);
-        
+        avatar.setStyle("-fx-effect: dropshadow(gaussian, #00000033, 8, 0.2, 0, 0);");
+        Circle borda = new Circle(55, 55, 56, Color.WHITE);
+        borda.setStroke(Color.WHITE);
+        borda.setStrokeWidth(4);
+        avatarPane.getChildren().addAll(borda, avatar);
+
+        // Botão de upload de foto
         Button btnUpload = new Button("Alterar Foto");
-        btnUpload.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: " + BRANCO + ";");
+        btnUpload.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: " + BRANCO + "; -fx-font-weight: bold;");
         btnUpload.setOnAction(e -> mostrarDialogoUploadFoto(avatar));
-        btnUpload.setTranslateY(-45);
+        btnUpload.setTranslateY(-40);
 
         // Card principal do perfil
-        VBox perfilBox = new VBox(10);
-        perfilBox.setStyle("-fx-background-color: " + BRANCO + "; -fx-padding: 30 30 20 30; -fx-background-radius: 0 0 16 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 0);");
-        perfilBox.setMaxWidth(600);
+        VBox perfilBox = new VBox(16);
+        perfilBox.setStyle("-fx-background-color: " + BRANCO + "; -fx-padding: 36 32 24 32; -fx-background-radius: 0 0 18 18; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 0);");
+        perfilBox.setMaxWidth(700);
         perfilBox.setAlignment(Pos.CENTER);
         perfilBox.setTranslateY(-60);
 
         // Nome, email, localização
         Label lblNome = new Label("Adelino Pedro");
-        lblNome.setFont(Font.font("Arial", 22));
+        lblNome.setFont(Font.font("Arial", 26));
         lblNome.setTextFill(Color.web(VERMELHO));
         Label lblEmail = new Label("adelino.pedro@exemplo.co.ao");
-        lblEmail.setFont(Font.font("Arial", 14));
+        lblEmail.setFont(Font.font("Arial", 15));
         lblEmail.setTextFill(Color.GRAY);
         Label lblLocal = new Label("Luanda, Angola");
-        lblLocal.setFont(Font.font("Arial", 13));
+        lblLocal.setFont(Font.font("Arial", 14));
         lblLocal.setTextFill(Color.web(VERMELHO));
 
         // Classificação
         HBox classificacaoBox = new HBox(8);
         classificacaoBox.setAlignment(Pos.CENTER);
         Label lblNivel = new Label("Leitor Ouro");
-        lblNivel.setFont(Font.font("Arial", 14));
+        lblNivel.setFont(Font.font("Arial", 15));
         lblNivel.setTextFill(Color.web("#F1C40F"));
         Label lblEstrelas = new Label("⭐⭐⭐⭐⭐");
-        lblEstrelas.setFont(Font.font("Arial", 18));
+        lblEstrelas.setFont(Font.font("Arial", 20));
         lblEstrelas.setTextFill(Color.web("#F1C40F"));
         classificacaoBox.getChildren().addAll(lblNivel, lblEstrelas);
 
-        // Estatísticas em cards
-        HBox stats = new HBox(30);
+        // Estatísticas em grid responsivo
+        GridPane stats = new GridPane();
+        stats.setHgap(24);
+        stats.setVgap(16);
         stats.setAlignment(Pos.CENTER);
-        VBox stat1 = criarStatCard("Livros Lidos", "24");
-        VBox stat2 = criarStatCard("Resenhas", "12");
-        VBox stat3 = criarStatCard("Tags Favoritas", "Fantasia, Programação");
-        VBox stat4 = criarStatCard("Multas Pagas", "5.000 Kz");
-        stats.getChildren().addAll(stat1, stat2, stat3, stat4);
+        stats.add(criarStatCard("Livros Lidos", "24"), 0, 0);
+        stats.add(criarStatCard("Resenhas", "12"), 1, 0);
+        stats.add(criarStatCard("Tags Favoritas", "Fantasia, Programação"), 0, 1);
+        stats.add(criarStatCard("Multas Pagas", "5.000 Kz"), 1, 1);
 
+        // Botões de ação responsivos
+        HBox botoes = new HBox(16);
+        botoes.setAlignment(Pos.CENTER);
         Button btnEditar = new Button("Editar Perfil");
         btnEditar.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: white; -fx-font-weight: bold;");
         Button btnAlterarSenha = new Button("Alterar PIN");
         btnAlterarSenha.setStyle("-fx-background-color: " + VERMELHO + "; -fx-text-fill: white;");
+        btnAlterarSenha.setOnAction(e -> mostrarDialogoAlterarPIN());
+        botoes.getChildren().addAll(btnEditar, btnAlterarSenha);
 
-        perfilBox.getChildren().addAll(lblNome, lblEmail, lblLocal, classificacaoBox, stats, btnEditar, btnAlterarSenha);
-        contentArea.getChildren().addAll(capa, avatar, btnUpload, perfilBox);
+        perfilBox.getChildren().addAll(lblNome, lblEmail, lblLocal, classificacaoBox, stats, botoes);
+        container.getChildren().addAll(capa, avatarPane, btnUpload, perfilBox);
+        contentArea.getChildren().add(container);
     }
 
     private VBox criarStatCard(String titulo, String valor) {
@@ -706,39 +549,43 @@ public class TelaPrincipalUsuario {
         dialog.setTitle("Avaliar Livro");
         dialog.setHeaderText("Avalie o livro: " + titulo);
 
-        // Criar conteúdo do diálogo
-        VBox content = new VBox(10);
+        VBox content = new VBox(14);
         content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
 
-        // Estrelas de avaliação
-        HBox estrelasBox = new HBox(5);
+        // Estrelas de avaliação (clicáveis e animadas)
+        HBox estrelasBox = new HBox(6);
         estrelasBox.setAlignment(Pos.CENTER);
-        
         Label lblEstrelas = new Label("Sua avaliação:");
         lblEstrelas.setFont(Font.font("Arial", 14));
-        
+        HBox estrelas = new HBox(2);
+        estrelas.setAlignment(Pos.CENTER);
         ToggleGroup grupoEstrelas = new ToggleGroup();
-        HBox estrelas = new HBox(5);
+        List<RadioButton> estrelasList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            final int rating = i;
-            RadioButton estrela = new RadioButton("⭐");
+            RadioButton estrela = new RadioButton("★");
             estrela.setToggleGroup(grupoEstrelas);
-            estrela.setFont(Font.font("Arial", 20));
-            estrela.setTextFill(Color.web("#F1C40F"));
-            estrela.setOnAction(e -> estrela.setTextFill(Color.web("#F1C40F")));
+            estrela.setFont(Font.font("Arial", 24));
+            estrela.setTextFill(Color.web("#B3A7E6"));
+            final int rating = i;
+            estrela.setOnAction(e -> {
+                for (int j = 0; j < 5; j++) {
+                    estrelasList.get(j).setTextFill(j < rating ? Color.web("#F1C40F") : Color.web("#B3A7E6"));
+                }
+            });
+            estrelasList.add(estrela);
             estrelas.getChildren().add(estrela);
         }
-        
         estrelasBox.getChildren().addAll(lblEstrelas, estrelas);
 
-        // Campo de comentário
+        // Campo de comentário estilizado
         Label lblComentario = new Label("Seu comentário:");
         lblComentario.setFont(Font.font("Arial", 14));
-        
         TextArea comentario = new TextArea();
         comentario.setPromptText("Compartilhe sua opinião sobre o livro...");
         comentario.setPrefRowCount(3);
         comentario.setWrapText(true);
+        comentario.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #E74C3C;");
 
         content.getChildren().addAll(estrelasBox, lblComentario, comentario);
 
@@ -746,10 +593,9 @@ public class TelaPrincipalUsuario {
         ButtonType btnEnviar = new ButtonType("Enviar", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(btnEnviar, btnCancelar);
-
         dialog.getDialogPane().setContent(content);
 
-        // Ação ao enviar
+        // Feedback visual ao enviar
         dialog.setResultConverter(buttonType -> {
             if (buttonType == btnEnviar) {
                 RadioButton estrelaSelecionada = (RadioButton) grupoEstrelas.getSelectedToggle();
@@ -757,6 +603,9 @@ public class TelaPrincipalUsuario {
                     int avaliacao = estrelas.getChildren().indexOf(estrelaSelecionada) + 1;
                     String comentarioTexto = comentario.getText();
                     salvarAvaliacao(titulo, avaliacao, comentarioTexto);
+                    mostrarNotificacao("Obrigado!", "Sua avaliação foi registrada com sucesso.");
+                } else {
+                    mostrarNotificacao("Atenção", "Por favor, selecione uma quantidade de estrelas.");
                 }
             }
             return null;
@@ -772,79 +621,17 @@ public class TelaPrincipalUsuario {
 
     private void mostrarListaDesejos() {
         contentArea.getChildren().clear();
-        
         Label titulo = new Label("Minha Lista de Desejos");
         titulo.setFont(Font.font("Arial", 24));
         titulo.setTextFill(Color.web(TEXTO_ESCURO));
-
-        // Grid de livros desejados
-        GridPane gridLivros = new GridPane();
-        gridLivros.setHgap(20);
-        gridLivros.setVgap(20);
-        gridLivros.setPadding(new Insets(20));
-        
-        // Exemplo de livros na lista de desejos
-        int col = 0;
-        int row = 0;
-        
-        gridLivros.add(criarCardLivroDesejado(
-            "https://m.media-amazon.com/images/I/71QKQ9mwV7L._AC_UF1000,1000_QL80_.jpg",
-            "O Nome do Vento",
-            "Patrick Rothfuss",
-            "Fantasia",
-            "Adicionado em: 15/03/2024"
-        ), col++, row);
-        
-        gridLivros.add(criarCardLivroDesejado(
-            "https://m.media-amazon.com/images/I/71QKQ9mwV7L._AC_UF1000,1000_QL80_.jpg",
-            "A Roda do Tempo",
-            "Robert Jordan",
-            "Fantasia",
-            "Adicionado em: 10/03/2024"
-        ), col, row);
-
-        ScrollPane scrollPane = new ScrollPane(gridLivros);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(500);
-
-        contentArea.getChildren().addAll(titulo, scrollPane);
-    }
-
-    private VBox criarCardLivroDesejado(String urlCapa, String titulo, String autor, String genero, String dataAdicao) {
-        VBox card = new VBox(10);
-        card.setAlignment(Pos.CENTER);
-        card.setPadding(new Insets(15));
-        card.setPrefWidth(200);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);");
-        
-        ImageView capa = new ImageView(new Image(urlCapa, 150, 200, true, true));
-        capa.setPreserveRatio(true);
-        
-        Label lblTitulo = new Label(titulo);
-        lblTitulo.setFont(Font.font("Arial", 14));
-        lblTitulo.setWrapText(true);
-        lblTitulo.setMaxWidth(180);
-        
-        Label lblAutor = new Label(autor);
-        lblAutor.setFont(Font.font("Arial", 12));
-        lblAutor.setTextFill(Color.GRAY);
-        
-        Label lblGenero = new Label(genero);
-        lblGenero.setFont(Font.font("Arial", 12));
-        lblGenero.setTextFill(Color.web(VERMELHO));
-        
-        Label lblData = new Label(dataAdicao);
-        lblData.setFont(Font.font("Arial", 10));
-        lblData.setTextFill(Color.GRAY);
-        
-        Button btnRemover = new Button("Remover da Lista");
-        btnRemover.setStyle("-fx-background-color: #95A5A6; -fx-text-fill: white;");
-        btnRemover.setPrefWidth(Double.MAX_VALUE);
-        btnRemover.setOnAction(e -> removerDaListaDesejos(titulo));
-        
-        card.getChildren().addAll(capa, lblTitulo, lblAutor, lblGenero, lblData, btnRemover);
-        
-        return card;
+        HBox lista = new HBox(24);
+        lista.setAlignment(Pos.CENTER_LEFT);
+        lista.getChildren().addAll(
+            criarLivroLinha("https://m.media-amazon.com/images/I/81QKQ9mwV7L._AC_UF1000,1000_QL80_.jpg", "O Nome do Vento", "Patrick Rothfuss", "Fantasia", 0, false, 4.6, 150),
+            criarLivroLinha("https://m.media-amazon.com/images/I/81QKQ9mwV7L._AC_UF1000,1000_QL80_.jpg", "A Roda do Tempo", "Robert Jordan", "Fantasia", 0, false, 4.5, 120),
+            criarLivroLinha("https://m.media-amazon.com/images/I/81AFgE3E6-L.jpg", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Aventura", 0, false, 4.8, 200)
+        );
+        contentArea.getChildren().addAll(titulo, lista);
     }
 
     private void mostrarTags() {
@@ -1083,18 +870,14 @@ public class TelaPrincipalUsuario {
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(15));
         card.setStyle("-fx-background-color: " + AZUL_CLARO + "; -fx-background-radius: 10;");
-        
         Label lblIcone = new Label(icone);
         lblIcone.setFont(Font.font("Arial", 24));
-        
         Label lblTitulo = new Label(titulo);
         lblTitulo.setFont(Font.font("Arial", 12));
         lblTitulo.setTextFill(Color.GRAY);
-        
-        Label lblValor = new Label(valor);
+        Label lblValor = new Label(valor.replace("R$", "Kz"));
         lblValor.setFont(Font.font("Arial", 20));
         lblValor.setTextFill(Color.web(AZUL_PRINCIPAL));
-        
         card.getChildren().addAll(lblIcone, lblTitulo, lblValor);
         return card;
     }
@@ -1103,27 +886,21 @@ public class TelaPrincipalUsuario {
         HBox item = new HBox(20);
         item.setStyle("-fx-background-color: " + AZUL_CLARO + "; -fx-padding: 15; -fx-background-radius: 10;");
         item.setAlignment(Pos.CENTER_LEFT);
-        
         Label lblLivro = new Label(livro);
         lblLivro.setFont(Font.font("Arial", 14));
         lblLivro.setTextFill(Color.web(TEXTO_ESCURO));
-        
         Label lblMotivo = new Label(motivo);
         lblMotivo.setFont(Font.font("Arial", 12));
         lblMotivo.setTextFill(Color.GRAY);
-        
-        Label lblValor = new Label(valor);
+        Label lblValor = new Label(valor.replace("R$", "Kz"));
         lblValor.setFont(Font.font("Arial", 14));
         lblValor.setTextFill(Color.web(AZUL_PRINCIPAL));
-        
         Label lblData = new Label(data);
         lblData.setFont(Font.font("Arial", 12));
         lblData.setTextFill(Color.GRAY);
-        
         Button btnAcao = new Button(pendente ? "Pagar" : "Pago");
         btnAcao.setStyle("-fx-background-color: " + (pendente ? AZUL_PRINCIPAL : "#27AE60") + "; -fx-text-fill: white;");
         btnAcao.setOnAction(e -> pagarMulta(livro));
-        
         item.getChildren().addAll(lblLivro, lblMotivo, lblValor, lblData, btnAcao);
         return item;
     }
@@ -1157,5 +934,74 @@ public class TelaPrincipalUsuario {
     private void pagarMulta(String livro) {
         // TODO: Implementar lógica de pagamento
         mostrarNotificacao("Sucesso", "Multa paga com sucesso!");
+    }
+
+    // Método utilitário para mostrar notificações amigáveis
+    private void mostrarNotificacao(String titulo, String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
+
+    // Modal animado para alterar PIN do usuário
+    private void mostrarDialogoAlterarPIN() {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Alterar PIN");
+        dialog.setHeaderText("Altere seu PIN de acesso");
+
+        VBox content = new VBox(14);
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
+        Label lblAtual = new Label("PIN atual:");
+        lblAtual.setFont(Font.font("Arial", 13));
+        PasswordField campoAtual = new PasswordField();
+        campoAtual.setPromptText("Digite seu PIN atual");
+        campoAtual.setMaxWidth(180);
+
+        Label lblNovo = new Label("Novo PIN:");
+        lblNovo.setFont(Font.font("Arial", 13));
+        PasswordField campoNovo = new PasswordField();
+        campoNovo.setPromptText("Digite o novo PIN");
+        campoNovo.setMaxWidth(180);
+
+        Label lblConfirma = new Label("Confirmar novo PIN:");
+        lblConfirma.setFont(Font.font("Arial", 13));
+        PasswordField campoConfirma = new PasswordField();
+        campoConfirma.setPromptText("Confirme o novo PIN");
+        campoConfirma.setMaxWidth(180);
+
+        content.getChildren().addAll(lblAtual, campoAtual, lblNovo, campoNovo, lblConfirma, campoConfirma);
+
+        ButtonType btnSalvar = new ButtonType("Salvar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(btnSalvar, btnCancelar);
+        dialog.getDialogPane().setContent(content);
+
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == btnSalvar) {
+                String atual = campoAtual.getText();
+                String novo = campoNovo.getText();
+                String confirma = campoConfirma.getText();
+                // Simulação de validação (substitua pela lógica real)
+                if (atual == null || atual.isEmpty()) {
+                    mostrarNotificacao("Atenção", "Digite o PIN atual.");
+                } else if (novo == null || novo.length() < 4) {
+                    mostrarNotificacao("Atenção", "O novo PIN deve ter pelo menos 4 dígitos.");
+                } else if (!novo.equals(confirma)) {
+                    mostrarNotificacao("Atenção", "Os PINs não coincidem.");
+                } else if (atual.equals(novo)) {
+                    mostrarNotificacao("Atenção", "O novo PIN deve ser diferente do atual.");
+                } else {
+                    // Aqui você faria a validação real do PIN atual e salvaria o novo PIN
+                    mostrarNotificacao("Sucesso!", "PIN alterado com sucesso.");
+                }
+            }
+            return null;
+        });
+
+        dialog.showAndWait();
     }
 } 
