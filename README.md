@@ -1,5 +1,17 @@
 # Biblioteca - Sistema de Gerenciamento de Biblioteca
 
+## 📚 Visão Geral do Projeto
+
+O `BibliotecaDevWork` é um sistema de gerenciamento de biblioteca robusto e intuitivo, desenvolvido em Java com interface gráfica JavaFX. Este projeto visa facilitar a administração de livros e utilizadores em ambientes de biblioteca, oferecendo funcionalidades essenciais para registo, pesquisa, empréstimo e devolução de itens. É uma solução ideal para pequenas e médias bibliotecas que procuram uma ferramenta eficiente e de fácil utilização para otimizar as suas operações diárias.
+
+## ✨ Funcionalidades Principais
+
+*   **Gestão de Utilizadores:** Registo, edição e remoção de utilizadores com diferentes níveis de acesso (administrador e comum).
+*   **Gestão de Livros:** Adição, atualização e remoção de livros, incluindo detalhes como título, autor, ISBN, ano de publicação e quantidade disponível.
+*   **Empréstimo e Devolução:** Sistema para registar empréstimos e devoluções de livros, com controlo de prazos.
+*   **Pesquisa Avançada:** Funcionalidades de pesquisa para encontrar livros e utilizadores rapidamente.
+*   **Interface Gráfica Intuitiva:** Desenvolvida com JavaFX para uma experiência de utilizador agradável e responsiva.
+
 ## 📋 Índice
 1. [Pré-requisitos](#pré-requisitos)
 2. [Instalação do Java](#instalação-do-java)
@@ -7,7 +19,9 @@
 4. [Instalação do JavaFX](#instalação-do-javafx)
 5. [Executando o Projeto](#executando-o-projeto)
 6. [Estrutura do Projeto](#estrutura-do-projeto)
-7. [Solução de Problemas](#solução-de-problemas)
+7. [Como Contribuir](#como-contribuir)
+8. [Licença](#licença)
+9. [Solução de Problemas](#solução-de-problemas)
 
 ## 🚀 Pré-requisitos
 - Windows 10 ou superior
@@ -102,6 +116,24 @@ BibliotecaDevWork/
 ├── run.bat                                       # Script para executar o projeto
 └── compile.bat                                   # Script para compilar o projeto
 ```
+
+## 🤝 Como Contribuir
+
+Contribuições são sempre bem-vindas! Se deseja contribuir para o `BibliotecaDevWork`, siga estes passos:
+
+1.  **Faça um Fork** do repositório.
+2.  **Clone** o seu fork localmente: `git clone https://github.com/Inspiders/BibliotecaDevWork.git`
+3.  **Crie uma Branch** para a sua funcionalidade ou correção: `git checkout -b feature/minha-funcionalidade` ou `git checkout -b bugfix/correcao-erro`.
+4.  **Faça as suas Alterações** e teste-as cuidadosamente.
+5.  **Commit** as suas alterações com mensagens claras e descritivas.
+6.  **Envie** as suas alterações para o seu fork: `git push origin feature/minha-funcionalidade`.
+7.  **Abra um Pull Request** para o repositório original, descrevendo as suas alterações e o problema que resolvem ou a funcionalidade que adicionam.
+
+Por favor, certifique-se de que o seu código segue as convenções de estilo do projeto e que todos os testes passam.
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
 
 ## 🔧 Solução de Problemas
 
